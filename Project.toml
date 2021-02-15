@@ -1,0 +1,13 @@
+name = "MadMax"
+uuid = "393f24de-c48f-4065-ba45-ab71fd969922"
+authors = ["Parth Pant <parthpant4@gmail.com> and contributors"]
+version = "0.1.0"
+
+[compat]
+julia = "1"
+
+[extras]
+Test = "8dfed614-e22c-5e08-85e1-65c5234f0b40"
+
+[targets]
+test = ["Test"]
