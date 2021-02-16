@@ -6,5 +6,4 @@ using Test
 # end
 
 f(x) = x^2-6
-BisectionEval(f, 2, 3)
-RegulaFalsiEval(f, 2, 3)
+NewtonEval(f, 0)
