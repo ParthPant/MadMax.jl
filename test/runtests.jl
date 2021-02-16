@@ -6,4 +6,4 @@ using Test
 # end
 
 f(x) = x^2-6
-NewtonEval(f, 0)
+NewtonEval(f, 2.5)

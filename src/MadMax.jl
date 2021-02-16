@@ -9,9 +9,12 @@ export NewtonEval
 
 function NewtonEval(f::Function, x0; tol = 0.005, N=100, verbose=true)
     error = Base.Inf64
+
     # find gradient 
+    x = 0
     df(x) = gradient(f, x)[1]
 
+    approximations = Array{Float64}(undef, 1)
     approximations = [x0]
     errors = [error]
     n = 0
@@ -19,14 +22,14 @@ function NewtonEval(f::Function, x0; tol = 0.005, N=100, verbose=true)
     # iterate
     while error > tol && n != N
         x_last = last(approximations)
-        delta = f(x_last) / df(x_last)
+        delta = f(x_last) / df(x_last) 
         x_n = x_last - delta
 
-        push!(approximations, x_n)
+        approximations = [approximations; x_n]
 
         # get error
-        error = error(x_last - x_n)
-        push!(errors, error)
+        error = abs(x_last - x_n)
+        errors = [errors; error]
 
         n += 1
     end
@@ -35,7 +38,7 @@ function NewtonEval(f::Function, x0; tol = 0.005, N=100, verbose=true)
         headers = ["S.N" "x_n" "Error"]
         data = hcat(0:n, approximations, errors)
         
-        pretty_table(data, header)
+        pretty_table(data, headers)
         println("$n iterations")
     end
 
