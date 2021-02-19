@@ -5,9 +5,11 @@ using Test
 #     # Write your tests here.
 # end
 
-X = [4 1 1 -2
-     1 5 2 6
-     1 2 3 4 ]
+X = [ 2 -1  0 -7
+     -1  2 -1 -1 
+      0 -1  2 -1]
     
-x, a = GaussJacobiEval(X, [0;0;0], N=50)
+x, a = GaussSeidelEval(X, [0;0;0], N=5)
+x, a = GaussJacobiEval(X, [0;0;0], N=5)
+x, a = SOREval(X, [5.5;4.5;3.5], 1.1716, N=2)
 println(x)
