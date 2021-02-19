@@ -2,10 +2,60 @@ module MadMax
 
 using PrettyTables
 using Flux
+using LinearAlgebra
 
 export BisectionEval
 export RegulaFalsiEval
 export NewtonEval
+export GaussJacobiEval
+
+function getLowerTriangular(X)
+    R = zeros(size(X)...)
+    for i in 1:size(X)[1]
+        for j in 1:size(X)[2]
+            if i>j
+                R[i,j] = X[i, j]
+            end
+        end
+    end
+    return R
+end
+
+function getUpperTriangular(X)
+    R = zeros(size(X)...)
+    for i in 1:size(X)[1]
+        for j in 1:size(X)[2]
+            if i<j
+                R[i,j] = X[i, j]
+            end
+        end
+    end
+    return R
+end
+
+function GaussJacobiEval(X, x0; tol=0.005, N=5, verbose=true)
+    A = X[:, 1:end-1]
+    b = -X[:, end]
+
+    D = Diagonal(A)
+    U = getUpperTriangular(A)
+    L = getLowerTriangular(A)
+    
+    H = -inv(D) * (L+U)
+    c = inv(D)*b
+
+    x = x0 
+    approximations = [x0]
+
+    n = 0
+    while n != N 
+        x = H*x + c
+        approximations = [approximations; [x]]
+        n += 1
+    end
+
+    return x, approximations
+end
 
 function NewtonEval(f::Function, x0; tol = 0.005, N=100, verbose=true)
     error = Base.Inf64
