@@ -70,6 +70,16 @@ function GaussJacobiEval(X, x0; tol=0.005, N=5, verbose=true)
     H = -inv(D) * (L+U)
     c = inv(D)*b
 
+    if verbose
+        println("H")
+        show(stdout, "text/plain", H)
+
+        println("")
+
+        println("c")
+        show(stdout, "text/plain", c)
+    end
+
     x = x0 
     approximations = [x0]
 
@@ -93,6 +103,16 @@ function GaussSeidelEval(X, x0; tol=0.005, N=5, verbose=true)
     
     H = -inv(L+D)*U
     c = inv(L+D)*b
+
+    if verbose
+        println("H=")
+        show(stdout, "text/plain", H)
+
+        println("")
+
+        println("c=")
+        show(stdout, "text/plain", c)
+    end
 
     x = x0 
     approximations = [x0]
