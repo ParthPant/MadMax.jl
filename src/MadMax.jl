@@ -10,6 +10,7 @@ export NewtonEval
 export GaussJacobiEval
 export GaussSeidelEval
 export SOREval
+export SOREval2
 
 function getLowerTriangular(X)
     R = zeros(size(X)...)
@@ -46,12 +47,62 @@ function SOREval(X, x0, ω=1; tol=0.005, N=5, verbose=true)
     H = inv(D+ω*L) * ((1-ω)D - ω*U)
     c = ω*inv(D+ω*L)*b
 
+    if verbose
+        println("H=")
+        show(stdout, "text/plain", H)
+        println("")
+        println("")
+        println("c=")
+        show(stdout, "text/plain", c)
+    end
+
     x = x0 
     approximations = [x0]
 
     n = 0
     while n != N 
         x = H*x + c
+        approximations = [approximations; [x]]
+        n += 1
+    end
+
+    if verbose
+        println("")
+        println("")
+        for (i,a) in enumerate(approximations)
+            print("$(i-1):")
+            println(a)
+        end
+    end
+
+    return x, approximations
+end
+
+function SOREval2(X, x0, ω=1; tol=0.005, N=5, verbose=true)
+    A = X[:, 1:end-1]
+    b = -X[:, end]
+
+    D = Diagonal(A)
+    U = getUpperTriangular(A)
+    L = getLowerTriangular(A)
+    
+    x = x0 
+    approximations = [x0]
+
+    n = 0
+    while n != N 
+        x_k = last(approximations)
+        r_k = b - A*x_k
+        e_k = inv(D+ω*L)*ω*r_k
+
+        x = e_k  + x_k
+    
+        if verbose
+            header = ["r_$(n+1)" "e_$(n+1)" "x_$(n+1)"]
+            data = hcat(r_k, e_k, x)
+            pretty_table(data,  header)
+        end
+
         approximations = [approximations; [x]]
         n += 1
     end
@@ -71,12 +122,11 @@ function GaussJacobiEval(X, x0; tol=0.005, N=5, verbose=true)
     c = inv(D)*b
 
     if verbose
-        println("H")
+        println("H=")
         show(stdout, "text/plain", H)
-
         println("")
-
-        println("c")
+        println("")
+        println("c=")
         show(stdout, "text/plain", c)
     end
 
@@ -90,6 +140,15 @@ function GaussJacobiEval(X, x0; tol=0.005, N=5, verbose=true)
         n += 1
     end
 
+    if verbose
+        println("")
+        println("")
+        for (i,a) in enumerate(approximations)
+            print("$(i-1):")
+            println(a)
+        end
+    end
+    
     return x, approximations
 end
 
@@ -107,9 +166,8 @@ function GaussSeidelEval(X, x0; tol=0.005, N=5, verbose=true)
     if verbose
         println("H=")
         show(stdout, "text/plain", H)
-
         println("")
-
+        println("")
         println("c=")
         show(stdout, "text/plain", c)
     end
@@ -122,6 +180,15 @@ function GaussSeidelEval(X, x0; tol=0.005, N=5, verbose=true)
         x = H*x + c
         approximations = [approximations; [x]]
         n += 1
+    end
+
+    if verbose
+        println("")
+        println("")
+        for (i,a) in enumerate(approximations)
+            print("$(i-1):")
+            println(a)
+        end
     end
 
     return x, approximations
