@@ -11,6 +11,8 @@ export GaussJacobiEval
 export GaussSeidelEval
 export SOREval
 export SOREval2
+export EulerODE
+export ModifiedEulerODE
 
 function getLowerTriangular(X)
     R = zeros(size(X)...)
@@ -89,11 +91,18 @@ function SOREval2(X, x0, ω=1; tol=0.005, N=5, verbose=true)
     x = x0 
     approximations = [x0]
 
+    H = inv(D+ω*L)*ω
+    if verbose
+        println("H=")
+        show(stdout, "text/plain", H)
+        println("")
+    end
+
     n = 0
     while n != N 
         x_k = last(approximations)
         r_k = b - A*x_k
-        e_k = inv(D+ω*L)*ω*r_k
+        e_k = H*r_k
 
         x = e_k  + x_k
     
@@ -345,6 +354,58 @@ function RegulaFalsiEval(f::Function, a, b; tol = 0.005, N = 100, verbose=true)
     end
 
     return approximations, errors
+end
+
+function EulerODE(f::Function, x0, y0, x, h; verbose = true)
+    x_n = x0
+    y_n = y0
+    xs = []
+    ys = []
+    n = 0
+    push!(xs, x_n)
+    push!(ys, y_n)
+    while x_n != x
+        y_n = y_n + h*f(x_n, y_n)
+        x_n += h
+        n += 1
+        push!(xs, x_n)
+        push!(ys, y_n)
+    end
+
+    if verbose
+        data = hcat(0:n, xs, ys)
+        header = ["S.No" "x" "y"]
+        pretty_table(data, header)
+        println("$n iterations")
+    end
+end
+
+function ModifiedEulerODE(f::Function, x0, y0, x, h; verbose = true)
+    x_n = x0
+    y_n = y0
+    xs = []
+    ys = []
+    y1s = []
+    n = 0
+    push!(xs, x_n)
+    push!(ys, y_n)
+    push!(y1s, 0)
+    while x_n != x
+        y_n_1 = y_n + h*f(x_n, y_n)
+        y_n = y_n + h*0.5*(f(x_n, y_n) + f(x_n+h, y_n_1))
+        x_n += h
+        n += 1
+        push!(y1s, y_n_1)
+        push!(xs, x_n)
+        push!(ys, y_n)
+    end
+
+    if verbose
+        data = hcat(0:n, xs, y1s, ys)
+        header = ["S.No" "x" "y1" "y"]
+        pretty_table(data, header)
+        println("$n iterations")
+    end
 end
 
 end
