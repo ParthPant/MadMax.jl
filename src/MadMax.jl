@@ -419,15 +419,15 @@ function RK2ODE(f::Function, x0, y0, x, h; verbose = true)
         if verbose
             println("---- initial point $x_n, $y_n ----")
         end
+
         k1 = h*f(x_n, y_n)
         k2 = h*f(x_n+h, y_n+k1)
         y_n = y_n + 0.5*(k1+k2)
         x_n += h
+        
         if verbose
             println("k1 = $k1")
             println("k2 = $k2")
-            println("k3 = $k3")
-            println("k4 = $k4")
             println("y$n = $y_n")
             println()
         end
@@ -444,15 +444,19 @@ function RK4ODE(f::Function, x0, y0, x, h; verbose = true)
         if verbose
             println("---- initial point $x_n, $y_n ----")
         end
+
         k1 = h*f(x_n, y_n)
         k2 = h*f(x_n+h/2, y_n+k1/2)
         k3 = h*f(x_n+h/2, y_n+k2/2)
         k4 = h*f(x_n+h, y_n+k3)
         y_n = y_n + (1/6)*(k1+2*(k2+k3)+k4)
         x_n += h
+
         if verbose
             println("k1 = $k1")
             println("k2 = $k2")
+            println("k3 = $k3")
+            println("k4 = $k4")
             println("y$n = $y_n")
             println()
         end

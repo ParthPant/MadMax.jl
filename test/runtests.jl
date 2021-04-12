@@ -30,6 +30,6 @@ f(x) = x^24-2.6x+1.6
 RegulaFalsiEval(f, 0, 1, tol=0.5*10^-3)
 NewtonEval(f, 0.05, N=4, tol=0.5*10^-4)
 
-f(x, y) = x^2+y
-ModifiedEulerODE(f, 0, 1, 0.1, 0.05)
-RK2ODE(f, 0 ,1, 0.1, 0.05)
+f(t, x) = -x*sin(t) + sin(t)
+ModifiedEulerODE(f, 0, 2+ℯ, 2π, 2π/10)
+RK2ODE(f, 0, 2+ℯ, 2π, 2π/10)
