@@ -10,6 +10,8 @@ using Test
 # SOREval2
 # EulerODE
 # ModifiedEulerODE
+# RK2ODE
+# RK4ODE
 
 X = [5 5 15 -40
       5 15 35 -104
@@ -30,3 +32,4 @@ NewtonEval(f, 0.05, N=4, tol=0.5*10^-4)
 
 f(x, y) = x^2+y
 ModifiedEulerODE(f, 0, 1, 0.1, 0.05)
+RK2ODE(f, 0 ,1, 0.1, 0.05)
